@@ -48,10 +48,6 @@ namespace InterfaceLab1
             ExpCombo.ItemsSource = Experiments;
             ExpCombo.SelectedItem = Experiments[0];
 
-            //Target = Exp.UpdateButton();
-            //Target.Click += StopExperiment;
-            //BtnCanvas.Children.Add(Target);
-
             Status = "Press Enter to start...";
         }
         
@@ -77,7 +73,17 @@ namespace InterfaceLab1
                 StartMeasuringTime();
             }
         }
-        
+
+        private void ExpCombo_Selected(object sender, RoutedEventArgs e)
+        {
+            BtnCanvas.Children.Remove(Target);
+            Target = Exp.UpdateButton();
+            Target.Click += StopExperiment;
+            BtnCanvas.Children.Add(Target);
+
+            ResultsTable.DataContext = Exp.Results;
+        }
+
         void StartMeasuringTime()
         {
             StopWatch.Start();
@@ -234,16 +240,6 @@ namespace InterfaceLab1
             }
             else
                 throw new ArgumentNullException("Failed to get DC.");
-        }
-
-        private void ExpCombo_Selected(object sender, RoutedEventArgs e)
-        {
-            BtnCanvas.Children.Remove(Target);
-            Target = Exp.UpdateButton();
-            Target.Click += StopExperiment;
-            BtnCanvas.Children.Add(Target);
-
-            ResultsTable.DataContext = Exp.Results;
         }
     }
 
