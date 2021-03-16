@@ -18,7 +18,30 @@ namespace InterfaceLab2
         bool IsExperimentStarted = false;
         bool MouseMoved = false;
 
+        // EXPERIMENT CONSTANTS
+        const int StartElemCount = 2,
+                  EndElemCount = 8,
+                  ElemStep = 1,
+                  Attempts = 5;
+
+        int AttemptN = 1;
+        int ElemCount = 0;
+
+        Random Random = new Random();
+
         ObservableCollection<string> Items = new ObservableCollection<string>();
+        
+        //IOrderedEnumerable<string> ItemsShuffled
+        //{
+        //    get { return Items.OrderBy(x => Random.NextDouble()); }
+        //    set 
+        //    {
+        //        Items = new ObservableCollection<string>();
+        //        foreach (string item in value)
+        //            Items.Add(item);
+        //        NotifyPropertyChanged(); 
+        //    }
+        //}
 
         string status;
         public string Status
@@ -26,7 +49,15 @@ namespace InterfaceLab2
             get { return status; }
             set { status = value; NotifyPropertyChanged(); }
         }
-        
+
+        // Shows number user must click on
+        int targetNumber;
+        public int TargetNumber
+        {
+            get { return targetNumber; }
+            set { targetNumber = value; NotifyPropertyChanged(); }
+        }
+
         public MainWindow()
         {
             InitializeComponent();
@@ -37,11 +68,12 @@ namespace InterfaceLab2
             Items.Add("2");
             Items.Add("3");
             Items.Add("4");
+            
+            TargetNumber = 1;
 
             Targets.ItemsSource = Items;
 
             SetupTimer();
-
         }
 
 
@@ -68,12 +100,55 @@ namespace InterfaceLab2
             }
         }
 
+        void StartNextExperiment()
+        {
+            if (IsExperimentStarted) return;
+
+            AttemptN++;
+
+            if (AttemptN == Attempts)
+            {
+                AttemptN = 1;
+                ElemCount += ElemStep;
+            }
+
+
+            if (ElemCount == EndElemCount)
+            {
+                Status = "Experiment series is complete!";
+            }
+            else
+            {
+                StartCountdown();
+                SetMouse();
+                GenerateTargets();
+            }
+        }
+
+        void StopExperiment(object _, RoutedEventArgs __)
+        {
+            if (IsExperimentStarted && MouseMoved)
+            {
+                StopWatch.Stop();
+                IsExperimentStarted = false;
+                MouseMoved = false;
+                Status = "Press Enter to start...";
+
+                //Exp.WriteResult(StopWatch.Elapsed.TotalMilliseconds);
+
+                StopWatch.Reset();
+
+                MessageBox.Show(StopWatch.Elapsed.TotalMilliseconds.ToString());
+            }
+        }
+
 
         public event PropertyChangedEventHandler PropertyChanged;
         void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
 
     }
 }
