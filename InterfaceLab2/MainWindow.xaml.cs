@@ -1,15 +1,12 @@
-﻿using System;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Runtime.CompilerServices;
-using System.Timers;
-using System.Windows;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Input;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Windows;
+using System.Windows.Input;
 
 namespace InterfaceLab2
 {
@@ -18,30 +15,9 @@ namespace InterfaceLab2
         bool IsExperimentStarted = false;
         bool MouseMoved = false;
 
-        // EXPERIMENT CONSTANTS
-        const int StartElemCount = 2,
-                  EndElemCount = 8,
-                  ElemStep = 1,
-                  Attempts = 5;
-
-        int AttemptN = 1;
-        int ElemCount = 0;
-
-        Random Random = new Random();
+        Experiment Experiment = new Experiment();
 
         ObservableCollection<string> Items = new ObservableCollection<string>();
-        
-        //IOrderedEnumerable<string> ItemsShuffled
-        //{
-        //    get { return Items.OrderBy(x => Random.NextDouble()); }
-        //    set 
-        //    {
-        //        Items = new ObservableCollection<string>();
-        //        foreach (string item in value)
-        //            Items.Add(item);
-        //        NotifyPropertyChanged(); 
-        //    }
-        //}
 
         string status;
         public string Status
@@ -64,14 +40,7 @@ namespace InterfaceLab2
 
             Status = "Press Enter to start...";
 
-            Items.Add("1");
-            Items.Add("2");
-            Items.Add("3");
-            Items.Add("4");
-            
-            TargetNumber = 1;
-
-            Targets.ItemsSource = Items;
+            ResultsTable.ItemsSource = Experiment.Results;
 
             SetupTimer();
         }
@@ -83,11 +52,11 @@ namespace InterfaceLab2
             if (e.Key == Key.Enter)
             {
                 e.Handled = true;
-                //StartNextExperiment();
+                StartNextExperiment();
             }
             else if (e.Key == Key.S && Keyboard.Modifiers == ModifierKeys.Control)
             {
-                //SaveResults();
+                SaveResults();
             }
         }
 
@@ -104,24 +73,20 @@ namespace InterfaceLab2
         {
             if (IsExperimentStarted) return;
 
-            AttemptN++;
+            Experiment.Next();
 
-            if (AttemptN == Attempts)
-            {
-                AttemptN = 1;
-                ElemCount += ElemStep;
-            }
-
-
-            if (ElemCount == EndElemCount)
+            if (Experiment.IsFinished)
             {
                 Status = "Experiment series is complete!";
             }
             else
             {
-                StartCountdown();
+                Items = Experiment.GetItems();
+                Targets.ItemsSource = Items;
+                TargetNumber = Experiment.GetTargetNumber();
+                IsExperimentStarted = true;
+                Status = "Go!";
                 SetMouse();
-                GenerateTargets();
             }
         }
 
@@ -134,12 +99,24 @@ namespace InterfaceLab2
                 MouseMoved = false;
                 Status = "Press Enter to start...";
 
-                //Exp.WriteResult(StopWatch.Elapsed.TotalMilliseconds);
-
-                StopWatch.Reset();
-
+                Experiment.WriteResult(StopWatch.Elapsed.TotalMilliseconds);
                 MessageBox.Show(StopWatch.Elapsed.TotalMilliseconds.ToString());
+                StopWatch.Reset();
             }
+        }
+
+
+        void SaveResults()
+        {
+            SaveFileDialog saveDialog = new SaveFileDialog();
+            if (saveDialog.ShowDialog() == false)
+            {
+                return;
+            }
+            if (Experiment.ExportToFile(saveDialog.FileName))
+                MessageBox.Show("Exported to file!");
+            else
+                MessageBox.Show("Failed to export results");
         }
 
 

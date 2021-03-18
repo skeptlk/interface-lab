@@ -158,15 +158,15 @@ namespace InterfaceLab1
 
         void SaveResults()
         {
-            SaveFileDialog saveFileDialog = new SaveFileDialog();
-            if (saveFileDialog.ShowDialog() == false)
+            SaveFileDialog saveDialog = new SaveFileDialog();
+            if (saveDialog.ShowDialog() == false)
             {
                 return;
             }
-            if (Exp.ExportToFile(saveFileDialog.FileName))
+            if (Exp.ExportToFile(saveDialog.FileName))
                 MessageBox.Show("Exported to file!");
             else
-                MessageBox.Show("Exporting results failed");
+                MessageBox.Show("Failed to export results");
         }
 
         void PositionTarget()

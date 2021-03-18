@@ -1,5 +1,4 @@
 ﻿using System.Windows;
-using System.Timers;
 using System.Windows.Controls;
 using System.Collections.ObjectModel;
 

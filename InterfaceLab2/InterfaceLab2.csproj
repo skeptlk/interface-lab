@@ -55,6 +55,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Experiment.cs" />
+    <Compile Include="ExperimentResult.cs" />
+    <Compile Include="Mouse.MainWindow.cs" />
     <Compile Include="Timers.MainWindow.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
