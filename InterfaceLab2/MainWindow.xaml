@@ -8,7 +8,6 @@
         Title="Lab 2: Hick Law"
         Height="700" Width="1200"
         KeyUp="Window_KeyUp"
-        MouseMove="Window_MouseMove"
         WindowStartupLocation="CenterScreen">
     <Grid>
         <Grid Margin="10">
@@ -19,8 +18,15 @@
             </Grid.ColumnDefinitions>
             <StackPanel Grid.Column="0">
                 <DataGrid x:Name="ResultsTable"
-                          AutoGenerateColumns="True" 
-                          ItemsSource="{Binding}"/>
+                          AutoGenerateColumns="False" 
+                          ItemsSource="{Binding}">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Width="30" Header="No" Binding="{Binding No}"/>
+                        <DataGridTextColumn Width="*" Header="ElemCount" Binding="{Binding ElemCount}"/>
+                        <DataGridTextColumn Width="*" Header="Attempts" Binding="{Binding AttemptsCount}"/>
+                        <DataGridTextColumn Width="*" Header="Average Time" Binding="{Binding Average}"/>
+                    </DataGrid.Columns>
+                </DataGrid>
             </StackPanel>
             <StackPanel VerticalAlignment="Center" 
                         Grid.Column="1">
@@ -49,6 +55,7 @@
                 <Label x:Name="StatusLabel" 
                     Margin="0 0 0 10"
                     Content="{Binding Status, ElementName=Window}"/>
+                <!-- TODO: conditional here -->
                 <Label Margin="0 0 0 10">
                     Next item:
                 </Label>

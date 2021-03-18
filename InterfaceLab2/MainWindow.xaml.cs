@@ -1,9 +1,6 @@
 ﻿using Microsoft.Win32;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Input;
@@ -13,7 +10,6 @@ namespace InterfaceLab2
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
         bool IsExperimentStarted = false;
-        bool MouseMoved = false;
 
         Experiment Experiment = new Experiment();
 
@@ -26,7 +22,7 @@ namespace InterfaceLab2
             set { status = value; NotifyPropertyChanged(); }
         }
 
-        // Shows number user must click on
+        // Shows number that user must click on
         int targetNumber;
         public int TargetNumber
         {
@@ -45,7 +41,6 @@ namespace InterfaceLab2
             SetupTimer();
         }
 
-
         // Handle Enter and Ctrl+S
         void Window_KeyUp(object sender, KeyEventArgs e)
         {
@@ -57,15 +52,6 @@ namespace InterfaceLab2
             else if (e.Key == Key.S && Keyboard.Modifiers == ModifierKeys.Control)
             {
                 SaveResults();
-            }
-        }
-
-        void Window_MouseMove(object _, MouseEventArgs __)
-        {
-            if (IsExperimentStarted && !MouseMoved)
-            {
-                MouseMoved = true;
-                StartMeasuringTime();
             }
         }
 
@@ -81,30 +67,28 @@ namespace InterfaceLab2
             }
             else
             {
+                Status = "Go!";
                 Items = Experiment.GetItems();
                 Targets.ItemsSource = Items;
                 TargetNumber = Experiment.GetTargetNumber();
-                IsExperimentStarted = true;
-                Status = "Go!";
                 SetMouse();
+
+                IsExperimentStarted = true;
+                StartMeasuringTime();
             }
         }
 
         void StopExperiment(object _, RoutedEventArgs __)
         {
-            if (IsExperimentStarted && MouseMoved)
+            if (IsExperimentStarted)
             {
-                StopWatch.Stop();
                 IsExperimentStarted = false;
-                MouseMoved = false;
                 Status = "Press Enter to start...";
 
-                Experiment.WriteResult(StopWatch.Elapsed.TotalMilliseconds);
-                MessageBox.Show(StopWatch.Elapsed.TotalMilliseconds.ToString());
-                StopWatch.Reset();
+                double time = StopMeasuringTime();
+                Experiment.WriteResult(time);
             }
         }
-
 
         void SaveResults()
         {
@@ -125,7 +109,6 @@ namespace InterfaceLab2
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-
 
     }
 }

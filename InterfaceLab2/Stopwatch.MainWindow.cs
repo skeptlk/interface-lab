@@ -10,8 +10,6 @@ namespace InterfaceLab2
 {
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
-        int CountDown = 3;
-        Timer Timer;
         Stopwatch StopWatch;
 
         void SetupTimer()
@@ -22,6 +20,14 @@ namespace InterfaceLab2
         void StartMeasuringTime()
         {
             StopWatch.Start();
+        }
+
+        double StopMeasuringTime()
+        {
+            StopWatch.Stop();
+            double time = StopWatch.Elapsed.TotalMilliseconds;
+            StopWatch.Reset();
+            return time;
         }
 
     }

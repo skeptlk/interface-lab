@@ -35,7 +35,7 @@ namespace InterfaceLab2
 
             if (AttemptN > Attempts)
             {
-                AttemptN = 0;
+                AttemptN = 1;
                 ElemCount += ElemStep;
             }
 
@@ -45,10 +45,11 @@ namespace InterfaceLab2
 
         public void WriteResult(double time)
         {
-            if (Results.Count > 0 && Results.Last().AttemptsMade < Attempts)
+            if (Results.Count > 0 && Results.Last().AttemptsCount < Attempts)
             {
                 ExperimentResult last = Results.Last();
-                last.Attempts.Add(time);
+                last.AddAttempt(time);
+                last.ElemCount++;
             }
             else
             {
@@ -57,7 +58,7 @@ namespace InterfaceLab2
                     No = ElemCount - StartElemCount + 1,
                     ElemCount = ElemCount
                 };
-                res.Attempts.Add(time);
+                res.AddAttempt(time);
                 Results.Add(res);
             }
         }
