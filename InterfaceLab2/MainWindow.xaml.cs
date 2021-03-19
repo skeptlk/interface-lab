@@ -9,11 +9,17 @@ namespace InterfaceLab2
 {
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
-        bool IsExperimentStarted = false;
 
         Experiment Experiment = new Experiment();
 
-        ObservableCollection<string> Items = new ObservableCollection<string>();
+        ObservableCollection<Target> Items = new ObservableCollection<Target>();
+
+        bool isExperimentStarted = false;
+        public bool IsExperimentStarted
+        {
+            get { return isExperimentStarted; }
+            set { isExperimentStarted = value; NotifyPropertyChanged(); }
+        }
 
         string status;
         public string Status
@@ -39,6 +45,7 @@ namespace InterfaceLab2
             ResultsTable.ItemsSource = Experiment.Results;
 
             SetupTimer();
+
         }
 
         // Handle Enter and Ctrl+S

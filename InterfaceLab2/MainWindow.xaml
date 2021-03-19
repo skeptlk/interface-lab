@@ -3,12 +3,15 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:interfacelab2="clr-namespace:InterfaceLab2"
         mc:Ignorable="d"
         Title="Lab 2: Hick Law"
         Height="700" Width="1200"
         KeyUp="Window_KeyUp"
         WindowStartupLocation="CenterScreen">
+    <Window.Resources>
+        <interfacelab2:BooleanToVisibilityConverter2 x:Key="BooleanToVisibilityConverter" />
+    </Window.Resources>
     <Grid>
         <Grid Margin="10">
             <Grid.ColumnDefinitions>
@@ -21,8 +24,7 @@
                           AutoGenerateColumns="False" 
                           ItemsSource="{Binding}">
                     <DataGrid.Columns>
-                        <DataGridTextColumn Width="30" Header="No" Binding="{Binding No}"/>
-                        <DataGridTextColumn Width="*" Header="ElemCount" Binding="{Binding ElemCount}"/>
+                        <DataGridTextColumn Width="*" Header="Title" Binding="{Binding Title}"/>
                         <DataGridTextColumn Width="*" Header="Attempts" Binding="{Binding AttemptsCount}"/>
                         <DataGridTextColumn Width="*" Header="Average Time" Binding="{Binding Average}"/>
                     </DataGrid.Columns>
@@ -38,13 +40,12 @@
                                     Margin="0 10 20 0"
                                     Height="35" 
                                     Width="60"
-                                    Background="Gray"
-                                    Foreground="LightGreen"
-                                    FontSize="10"
-                                    FontFamily="Times New Roman"
+                                    Background="DarkGray"
                                     BorderThickness="0" 
                                     IsTabStop="False"
-                                    Content="{Binding}"
+                                    Content="{Binding Text}"
+                                    FontSize="{Binding FontSize}"
+                                    Foreground="{Binding Foreground}"
                                     Click="StopExperiment"/>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
@@ -54,13 +55,22 @@
             <StackPanel Grid.Column="2">
                 <Label x:Name="StatusLabel" 
                     Margin="0 0 0 10"
-                    Content="{Binding Status, ElementName=Window}"/>
-                <!-- TODO: conditional here -->
-                <Label Margin="0 0 0 10">
-                    Next item:
-                </Label>
-                <Label FontSize="30" 
-                       Content="{Binding TargetNumber, ElementName=Window}"/>
+                    Content="{Binding Status, ElementName=Window}"
+                 />
+
+                <Grid>
+                    <!--<Grid Visibility="{
+                        Binding IsExperimentStarted, 
+                        Converter={StaticResource BooleanToVisibilityConverter}}">
+                    -->
+                    <Label Margin="0 0 0 10">
+                        Next item:
+                    </Label>
+                    <Label FontSize="30" 
+                           Content="{Binding TargetNumber, ElementName=Window}"
+                    />
+                </Grid>
+                
             </StackPanel>
         </Grid>
     </Grid>

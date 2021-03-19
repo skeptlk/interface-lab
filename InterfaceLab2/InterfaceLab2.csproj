@@ -55,10 +55,12 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="BooleanToVisibilityConverter2.cs" />
     <Compile Include="Experiment.cs" />
     <Compile Include="ExperimentResult.cs" />
     <Compile Include="Mouse.MainWindow.cs" />
     <Compile Include="Stopwatch.MainWindow.cs" />
+    <Compile Include="Target.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

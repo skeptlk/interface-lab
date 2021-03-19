@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Windows.Media;
+
 
 namespace InterfaceLab2
 {
@@ -13,8 +15,28 @@ namespace InterfaceLab2
           ElemStep = 1,
           Attempts = 5;
 
-        int AttemptN = 0;
-        int ElemCount = 0;
+        readonly int[] FontSizes = { 10, 11, 12, 14, 16 };
+        readonly Brush[] Colors = { 
+            Brushes.White, 
+            Brushes.Black, 
+            Brushes.Yellow, 
+            Brushes.Green, 
+            Brushes.Blue, 
+            Brushes.Crimson 
+        };
+
+        int AttemptI,
+            ColorI,
+            FontSizeI,
+            CurrElemCount;
+
+        // Experiment has two parts: 
+        // 1. Traversing FontSizes
+        // 2. Traversing Colors
+        int Part;
+
+
+        ExperimentResult CurrentResult;
 
         Random Random;
 
@@ -22,7 +44,14 @@ namespace InterfaceLab2
         public bool IsFinished { get; set; }
         public Experiment()
         {
-            ElemCount = StartElemCount;
+            CurrElemCount = StartElemCount;
+            AttemptI = -1;
+            ColorI = 0;
+            FontSizeI = 0;
+            
+            Part = 1;
+
+            StartNewSeries();
 
             IsFinished = false;
             Random = new Random();
@@ -31,55 +60,76 @@ namespace InterfaceLab2
 
         public void Next()
         {
-            AttemptN++;
+            AttemptI++;
 
-            if (AttemptN > Attempts)
+            if (AttemptI == Attempts)
             {
-                AttemptN = 1;
-                ElemCount += ElemStep;
+                AttemptI = 0;
+                CurrElemCount += ElemStep;
             }
 
-            if (ElemCount == EndElemCount)
-                IsFinished = true;
+            if (CurrElemCount == EndElemCount)
+            {
+                CurrElemCount = StartElemCount;
+
+                // First part: Font colors
+                if (Part == 1)
+                {
+                    ColorI++;
+                    StartNewSeries();
+
+                    if (ColorI == Colors.Length)
+                        Part = 2;
+                } else
+                // Second part: Font sizes
+                {
+                    FontSizeI++;
+                    StartNewSeries();
+
+                    if (FontSizeI == FontSizes.Length)
+                        IsFinished = true;
+                }
+            }
         }
 
         public void WriteResult(double time)
         {
-            if (Results.Count > 0 && Results.Last().AttemptsCount < Attempts)
-            {
-                ExperimentResult last = Results.Last();
-                last.AddAttempt(time);
-                last.ElemCount++;
-            }
-            else
-            {
-                var res = new ExperimentResult()
-                {
-                    No = ElemCount - StartElemCount + 1,
-                    ElemCount = ElemCount
-                };
-                res.AddAttempt(time);
-                Results.Add(res);
-            }
+            CurrentResult.AddResult(CurrElemCount, time);
         }
 
-        public ObservableCollection<string> GetItems()
+        private void StartNewSeries()
         {
-            List<string> items = new List<string>(ElemCount);
+            CurrentResult = new ExperimentResult()
+            {
+                Title = (Part == 1) ?
+                    "Font size: " + FontSizes[FontSizeI].ToString() :
+                    "Color: " + Colors[ColorI].ToString()
+            };
+            Results.Add(CurrentResult);
+        }
 
-            items.AddRange(
-                Enumerable
-                    .Range(1, ElemCount)
-                    .Select(i => i.ToString())
-                    .OrderBy(x => Random.NextDouble())
-                );
+        public ObservableCollection<Target> GetItems()
+        {
+            List<Target> result = new List<Target>();
 
-            return new ObservableCollection<string>(items);
+            for (int i = 1; i <= CurrElemCount; i++)
+            {
+                result.Add(new Target
+                {
+                    Foreground = Colors[ColorI],
+                    FontSize = FontSizes[FontSizeI],
+                    Text = i.ToString()
+                });
+            }
+
+            return new ObservableCollection<Target>(
+                result.OrderBy(x => Random.NextDouble())
+            );
         }
 
         public int GetTargetNumber()
         {
-            return Random.Next(1, ElemCount + 1);
+            return Random.Next(1, CurrElemCount + 1);
         }
 
         public bool ExportToFile(string fileName)
@@ -88,6 +138,8 @@ namespace InterfaceLab2
             {
                 using (StreamWriter output = new StreamWriter(fileName))
                 {
+                    output.WriteLine(ExperimentResult.CSV_Header(StartElemCount, EndElemCount));
+
                     foreach (ExperimentResult res in Results)
                     {
                         output.WriteLine(res.ToCSV());

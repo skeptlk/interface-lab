@@ -7,44 +7,49 @@ namespace InterfaceLab2
 {
     public class ExperimentResult: INotifyPropertyChanged
     {
-        public int No { get; set; }
-        public int ElemCount { get; set; }
-        
-        private List<double> Attempts = new List<double>();
-        public void AddAttempt(double time)
+        public string Title { get; set; }
+
+        // Map (element_n => [attempts])
+        private Dictionary<int, List<double>> Results = new Dictionary<int, List<double>>();
+
+        public void AddResult(int elCount, double time)
         {
-            Attempts.Add(time);
-            AttemptsCount = Attempts.Count;
-            Average = Attempts.Average();
+            if (Results[elCount] == null)
+                Results[elCount] = new List<double>();
+            Results[elCount].Add(time);
+
+            TotalAttempts++;
         }
 
         /**
          * DYNAMIC PROPERTIES
          */
-        private int attemptsCount;
-        public int AttemptsCount { 
-            get { return attemptsCount; } 
-            set { attemptsCount = value; OnPropertyChanged(); }
+        private int totalAttempts = 0;
+        public int TotalAttempts
+        {
+            get { return totalAttempts; }
+            set { totalAttempts = value; OnPropertyChanged(); }
         }
-        
-        private double average;
-        public double Average { 
-            get { return average; } 
-            set { average = value; OnPropertyChanged(); }
+
+        public static string CSV_Header(int ElMin, int ElMax)
+        {
+            string header = "; ; ";
+            for (int i = ElMin; i <= ElMax; i++)
+                header += i + ";";
+            return header;
         }
 
         public string ToCSV()
         {
-            string result = No + "; " + ElemCount + "; ";
+            string result = Title + "; ";
 
-            foreach (double a in Attempts)
+            foreach (int elCount in Results.Keys.OrderBy(x => x))
             {
-                result += a + "; ";
+                result += Results[elCount].Average() + "; ";
             }
-            
-            result += Average;
             return result;
         }
+
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string name = null)
