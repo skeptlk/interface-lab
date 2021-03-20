@@ -25,8 +25,7 @@
                           ItemsSource="{Binding}">
                     <DataGrid.Columns>
                         <DataGridTextColumn Width="*" Header="Title" Binding="{Binding Title}"/>
-                        <DataGridTextColumn Width="*" Header="Attempts" Binding="{Binding AttemptsCount}"/>
-                        <DataGridTextColumn Width="*" Header="Average Time" Binding="{Binding Average}"/>
+                        <DataGridTextColumn Width="*" Header="TotalAttempts" Binding="{Binding TotalAttempts}"/>
                     </DataGrid.Columns>
                 </DataGrid>
             </StackPanel>
@@ -58,18 +57,18 @@
                     Content="{Binding Status, ElementName=Window}"
                  />
 
-                <Grid>
+                <StackPanel>
                     <!--<Grid Visibility="{
                         Binding IsExperimentStarted, 
                         Converter={StaticResource BooleanToVisibilityConverter}}">
                     -->
-                    <Label Margin="0 0 0 10">
+                    <Label>
                         Next item:
                     </Label>
                     <Label FontSize="30" 
                            Content="{Binding TargetNumber, ElementName=Window}"
                     />
-                </Grid>
+                </StackPanel>
                 
             </StackPanel>
         </Grid>

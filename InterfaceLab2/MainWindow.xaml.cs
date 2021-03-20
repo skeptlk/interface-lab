@@ -91,6 +91,7 @@ namespace InterfaceLab2
             {
                 IsExperimentStarted = false;
                 Status = "Press Enter to start...";
+                Targets.ItemsSource = null;
 
                 double time = StopMeasuringTime();
                 Experiment.WriteResult(time);

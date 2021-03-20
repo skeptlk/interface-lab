@@ -14,8 +14,8 @@ namespace InterfaceLab2
         {
             int center_x, center_y;
             TransformToPixels(
-                Left,
-                (Top + Height / 2),
+                Left + Width / 3,
+                Top + Height / 2,
                 out center_x,
                 out center_y
             );

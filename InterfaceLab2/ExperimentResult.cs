@@ -14,8 +14,9 @@ namespace InterfaceLab2
 
         public void AddResult(int elCount, double time)
         {
-            if (Results[elCount] == null)
-                Results[elCount] = new List<double>();
+            if (!Results.ContainsKey(elCount))
+                Results.Add(elCount, new List<double>());
+            
             Results[elCount].Add(time);
 
             TotalAttempts++;
@@ -33,7 +34,7 @@ namespace InterfaceLab2
 
         public static string CSV_Header(int ElMin, int ElMax)
         {
-            string header = "; ; ";
+            string header = "; ";
             for (int i = ElMin; i <= ElMax; i++)
                 header += i + ";";
             return header;
