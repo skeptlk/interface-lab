@@ -55,7 +55,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="BooleanToVisibilityConverter2.cs" />
     <Compile Include="Experiment.cs" />
     <Compile Include="ExperimentResult.cs" />
     <Compile Include="Mouse.MainWindow.cs" />

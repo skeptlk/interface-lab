@@ -28,12 +28,11 @@ namespace InterfaceLab2
             set { status = value; NotifyPropertyChanged(); }
         }
 
-        // Shows number that user must click on
-        int targetNumber;
-        public int TargetNumber
+        string title;
+        public string Title
         {
-            get { return targetNumber; }
-            set { targetNumber = value; NotifyPropertyChanged(); }
+            get { return title; }
+            set { title = value;NotifyPropertyChanged(); }
         }
 
         public MainWindow()
@@ -77,7 +76,6 @@ namespace InterfaceLab2
                 Status = "Go!";
                 Items = Experiment.GetItems();
                 Targets.ItemsSource = Items;
-                TargetNumber = Experiment.GetTargetNumber();
                 SetMouse();
 
                 IsExperimentStarted = true;

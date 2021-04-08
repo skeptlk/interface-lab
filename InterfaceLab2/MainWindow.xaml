@@ -9,9 +9,6 @@
         Height="700" Width="1200"
         KeyUp="Window_KeyUp"
         WindowStartupLocation="CenterScreen">
-    <Window.Resources>
-        <interfacelab2:BooleanToVisibilityConverter2 x:Key="BooleanToVisibilityConverter" />
-    </Window.Resources>
     <Grid>
         <Grid Margin="10">
             <Grid.ColumnDefinitions>
@@ -56,20 +53,6 @@
                     Margin="0 0 0 10"
                     Content="{Binding Status, ElementName=Window}"
                  />
-
-                <StackPanel>
-                    <!--<Grid Visibility="{
-                        Binding IsExperimentStarted, 
-                        Converter={StaticResource BooleanToVisibilityConverter}}">
-                    -->
-                    <Label>
-                        Next item:
-                    </Label>
-                    <Label FontSize="30" 
-                           Content="{Binding TargetNumber, ElementName=Window}"
-                    />
-                </StackPanel>
-                
             </StackPanel>
         </Grid>
     </Grid>

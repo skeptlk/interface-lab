@@ -13,25 +13,44 @@ namespace InterfaceLab2
         const int StartElemCount = 2,
           EndElemCount = 8,
           ElemStep = 1,
-          Attempts = 5;
+          Attempts = 3;
 
         readonly int[] FontSizes = { 10, 11, 12, 14, 16 };
         readonly Brush[] Colors = {
             Brushes.White,
-            Brushes.Black,
             Brushes.Yellow,
             Brushes.Green, 
             Brushes.Blue,
             Brushes.Crimson
         };
+        readonly string[] ColorNames = {
+            "Белый",
+            "Жёлтый",
+            "Зелёный",
+            "Синий",
+            "Красный",
+        };
 
         int AttemptI,
-            ColorI,
             FontSizeI,
+            ColorI,
             CurrElemCount;
 
-        const int FontSizeIDefault = 2,
-                  ColorIDefault = 0;
+        static int BaseFont = 15;
+        static Brush BaseColor = Brushes.Black;
+
+        int CurrFontSize {
+            get { return (FontSizeI < 0 || FontSizeI >= FontSizes.Length)
+                    ? BaseFont 
+                    : FontSizes[FontSizeI]; 
+            }
+        }
+        Brush CurrColor {
+            get { return (ColorI < 0 || ColorI >= Colors.Length) 
+                    ? BaseColor 
+                    : Colors[ColorI]; 
+            }
+        }
 
         // Experiment has two parts: 
         // 1. Traversing Colors
@@ -52,9 +71,7 @@ namespace InterfaceLab2
             CurrElemCount = StartElemCount;
             AttemptI = -1;
             ColorI = 0;
-            FontSizeI = 0;
-
-            FontSizeI = FontSizeIDefault;
+            FontSizeI = -1;
 
             Part = 1;
 
@@ -83,10 +100,10 @@ namespace InterfaceLab2
                 if (Part == 1)
                 {
                     ColorI++;
+                    FontSizeI = -1;
 
                     if (ColorI == Colors.Length)
                     {
-                        ColorI = ColorIDefault;
                         Part = 2;
                         FontSizeI = 0;
                     }
@@ -96,6 +113,7 @@ namespace InterfaceLab2
                 // Second part: Font sizes
                 {
                     FontSizeI++;
+                    ColorI = -1;
 
                     if (FontSizeI == FontSizes.Length)
                     {
@@ -118,7 +136,7 @@ namespace InterfaceLab2
             CurrentResult = new ExperimentResult()
             {
                 Title = (Part == 1) ?
-                    "Color: " + Colors[ColorI].ToString() :
+                    "Color: " + ColorNames[ColorI] :
                     "Font size: " + FontSizes[FontSizeI].ToString()
             };
             Results.Add(CurrentResult);
@@ -132,20 +150,28 @@ namespace InterfaceLab2
             {
                 result.Add(new Target
                 {
-                    Foreground = Colors[ColorI],
-                    FontSize = FontSizes[FontSizeI],
+                    Foreground = BaseColor,
+                    FontSize = BaseFont,
                     Text = i.ToString()
                 });
             }
+
+            int target = GetTargetNumber();
+            result[target] = new Target
+            {
+                Foreground = CurrColor,
+                FontSize = CurrFontSize,
+                Text = (target + 1).ToString(),
+            };
 
             return new ObservableCollection<Target>(
                 result.OrderBy(x => Random.NextDouble())
             );
         }
 
-        public int GetTargetNumber()
+        private int GetTargetNumber()
         {
-            return Random.Next(1, CurrElemCount + 1);
+            return Random.Next(0, CurrElemCount);
         }
 
         public bool ExportToFile(string fileName)
